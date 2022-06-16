@@ -8,8 +8,8 @@
 | TeamName    |        SQL_Squad       |
 | Captain     |       Fang Yi Lin      |
 | Captain     |    fyl2@illinois.edu   |
-| Member1     |   FirstName LastName   |
-| Member1     |      Member2-Email     |
+| Member1     |    Alexander Kwandou   |
+| Member1     |  kwandou2@illinois.edu |
 | Member2     |   FirstName LastName   |
 | Member2     |      Member3-Email     |
 | Member3     |   FirstName LastName   |

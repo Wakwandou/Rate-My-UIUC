@@ -5,9 +5,9 @@
 |   Info      |        Description     |
 | ----------- | ---------------------- |
 | TeamID      |         Team-001       |
-| TeamName    |        SampleTeam      |
-| Captain     |   FirstName LastName   |
-| Captain     |      Captain-Email     |
+| TeamName    |        SQL_Squad       |
+| Captain     |       Fang Yi Lin      |
+| Captain     |    fyl2@illinois.edu   |
 | Member1     |   FirstName LastName   |
 | Member1     |      Member2-Email     |
 | Member2     |   FirstName LastName   |

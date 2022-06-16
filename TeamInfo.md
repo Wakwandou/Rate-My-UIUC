@@ -10,8 +10,8 @@
 | Captain     |    fyl2@illinois.edu   |
 | Member1     |    Alexander Kwandou   |
 | Member1     |  kwandou2@illinois.edu |
-| Member2     |   FirstName LastName   |
-| Member2     |      Member3-Email     |
+| Member2     |       Samuel Du        |   
+| Member2     |    sydu2@illinois.edu  |
 | Member3     |   FirstName LastName   |
 | Member3     |      Member4-Email     |
 

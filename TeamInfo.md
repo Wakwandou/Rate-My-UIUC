@@ -12,8 +12,8 @@
 | Member1     |  kwandou2@illinois.edu |
 | Member2     |       Samuel Du        |   
 | Member2     |    sydu2@illinois.edu  |
-| Member3     |   FirstName LastName   |
-| Member3     |      Member4-Email     |
+| Member3     |      Sri Abbineni      |
+| Member3     |    sra8@illinois.edu   |
 
 ## Project Information
 

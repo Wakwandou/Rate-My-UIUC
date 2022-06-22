@@ -62,4 +62,4 @@ Each member will own each component of the web app and will do all the frontend 
 
 We could potentially illustrate some simple visualizations of how the average GPA or rating of this course has changed over time, in order to help students better understand how the course has progressed over time.
 
-More complex creative components would include sentiment analysis on all of the reviews on a course or a professor to understand if reviews are largely positive or negative or a summarization algorithm to distill key insights from all the reviews that have been given to a course or professor.
+More complex creative components would include sentiment analysis on all of the reviews on a course or a professor to understand if reviews are largely positive or negative or a summarization algorithm to distill key insights from all the reviews that have been given to a course or professor. In order to achieve this, we will likely use available sentiment analysis or summarization libraries.

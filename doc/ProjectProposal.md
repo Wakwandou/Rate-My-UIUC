@@ -56,3 +56,10 @@ Aggregated fields like course ratings from 1-5 and the average course GPA will b
 **Samuel**: Course and professor reviews/comments, editing existing reviews/comments, Insert new records (rows) to the database, Update records on the database and Delete rows from the database
 
 Each member will own each component of the web app and will do all the frontend and backend work for the feature to function.
+
+
+# Potential Creative Components
+
+We could potentially illustrate some simple visualizations of how the average GPA or rating of this course has changed over time, in order to help students better understand how the course has progressed over time.
+
+More complex creative components would include sentiment analysis on all of the reviews on a course or a professor to understand if reviews are largely positive or negative or a summarization algorithm to distill key insights from all the reviews that have been given to a course or professor.

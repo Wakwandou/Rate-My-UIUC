@@ -1,4 +1,4 @@
-# team001-SQL_Squad Team
+# Team001-SQL_Squad Team
 
 ## Basic Information
 

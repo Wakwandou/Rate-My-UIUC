@@ -1,11 +1,13 @@
-Guest(TempID:VARCHAR(200) [PK], TempUsername:VARCHAR(200))
+Entities: 
+Users(Username:VARCHAR(100) [PK], NetID:VARCHAR(50), Password: VARCHAR(100), IsGuest:BOOLEAN)
 
-Registrations(NetID:VARCHAR(10) [PK], SemYear:VARCHAR(5) [PK], CRN:VARCHAR(6) [FK to Course.CRN])
+Reviews(ReviewID:VARCHAR(50) [PK], Rating:REAL, Comment:VARCHAR(500), IsRecommended:BOOLEAN, RequiresTextbook:BOOLEAN, Upvotes:INT, Downvotes:INT, UserNetID:VARCHAR(100) [FK to Users.NetID], CRN:VARCHAR(6) [FK to Courses.CRN], InstructorNetID:VARCHAR(50) [FK to Instructors.NetID])
 
-User(NetID:VARCHAR(10) [PK], Username:VARCHAR(200))
+Courses(CRN:VARCHAR(6) [PK], CourseName:VARCHAR(50), CourseNumber:VARCHAR(3), Description:VARCHAR(500), DeptAbv:VARCHAR(4) [FK to Departments.DeptAbv])
 
-Instructor(NetID:VARCHAR(200) [PK], Name:VARCHAR(200), AverageScore:VARCHAR(200))
+Instructors(NetID:VARCHAR(50) [PK], Name:VARCHAR(100), DeptAbv:VARCHAR(4) [FK to Departments.DeptAbv])
 
-Course(CRN:VARCHAR(6) [PK], SemYear:VARCHAR(5) [PK], InstructorNetID:VARCHAR(200) [PK][FK to Instructor.NetID], Department:VARCHAR(200), AverageGPA:REAL, AverageScore:REAL, CourseName:VARCHAR(200))
+Departments(DeptAbv:VARCHAR(4) [PK], DeptName:VARCHAR(50), Location:VARCHAR(100), URL:VARCHAR(50), PhoneNumber:VARCHAR(20))
 
-Review(ReviewID:VARCHAR(200) [PK], CRN:VARCHAR(6), InstructorNetID:VARCHAR(10) [FK to Instructor.NetID], Score:REAL, Comment:VARCHAR(500), GPA:REAL, TakeAgain:BOOLEAN, TextBook:VARCHAR(200), Upvotes:INT, Downvotes:INT, NetID:VARCHAR(10) [FK to User.NetID])
+Relationships:
+Enrolled(YearTerm:VARCHAR(10) [PK], GPA:REAL, UserNetID:VARCHAR(50) [PK, FK to Users.NetID], InstrNetID:VARCHAR(50) [PK, FK to Instructors.NetID], CRN:VARCHAR(4) [PK, FK to Courses.CRN])

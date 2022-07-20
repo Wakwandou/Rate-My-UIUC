@@ -1,0 +1,9 @@
+runtime: python38
+
+instance_class: f1
+
+env_variables: 
+  MYSQL_USER: 'root'
+  MYSQL_PASSWORD: uDo8>v"2s;/GlnS8
+  MYSQL_DB: 'squad'
+  MYSQL_HOST: 35.224.176.100

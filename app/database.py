@@ -19,7 +19,7 @@ def get_avg_ratings():
 
     print([row for row in results])
 
-# highest ratings grouped by DeptAbv and CourseNumber
+# returns the most highly rated professors name and their rating for all courses (identified by the coursenumber and deptabv)
 def get_highest_ratings():
     conn = db.connect()
     results = conn.execute 

@@ -48,3 +48,19 @@ def get_highest_ratings():
 
     print([row for row in results])
     # return results
+
+#updates review with ID of selectedReviewID
+def update_review(selectedReviewID, rating, comment, is_recommended, requires_textbook, CRN, instructor_netid):
+    conn = db.connect()
+    #not sure if this format for the ? and () works check later if not use .format()
+    conn.execute 
+    (
+        """ 
+        UPDATE Reviews 
+        SET Rating = ?, Comment = ?, IsRecommended = ?, RequiresTextbook = ?, CRN = ?, InstructorNetID = ? 
+        WHERE ReviewID = ?; 
+        """, 
+        (rating, comment, is_recommended, requires_textbook, CRN, instructor_netid, selectedReviewID)
+    )
+    conn.commit()
+    conn.close()

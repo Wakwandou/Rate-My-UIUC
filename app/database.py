@@ -1,3 +1,4 @@
+from calendar import c
 import random
 from app import db
 
@@ -129,7 +130,7 @@ def remove_review_by_id(review_id: int) -> None:
     """ remove entries based on review ID """
     conn = db.connect()
     conn.execute("use squad;")
-    query = 'Delete From Reviews where ReviewID={};'.format(review_id)
+    query = 'DELETE FROM Reviews WHERE ReviewID = \"{}\";'.format(review_id)
     conn.execute(query)
     conn.close()
 

@@ -3,16 +3,20 @@ from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
 
-@app.route("/delete/<int:review_id>", methods=['POST'])
+@app.route("/delete/<string:review_id>", methods=['POST'])
 def delete(review_id):
     """ recieved post requests for entry delete """
 
     try:
+        print(review_id)
         db_helper.remove_review_by_id(review_id)
+        print("worked")
         result = {'success': True, 'response': 'Removed task'}
     except:
+        print("failed")
         result = {'success': False, 'response': 'Something went wrong'}
 
+    print(result)
     return jsonify(result)
 
 

@@ -1,3 +1,4 @@
+from calendar import c
 import random
 from app import db
 
@@ -58,10 +59,6 @@ def fetch_instructors() -> dict:
         instructors[result[0].strip()] = instructor
     
     return instructors
-
-
-def get_name():
-    return random.choice(["Ann", "Bob", "Chris", "Daniel"])
 
 # average ratings for each CRN 
 def get_avg_ratings():
@@ -134,23 +131,15 @@ def remove_review_by_id(review_id: int) -> None:
     """ remove entries based on review ID """
     conn = db.connect()
     conn.execute("use squad;")
-    query = 'Delete From Reviews where ReviewID={};'.format(review_id)
+    query = 'DELETE FROM Reviews WHERE ReviewID = \"{}\";'.format(review_id)
     conn.execute(query)
     conn.close()
 
 #updates review with ID of selectedReviewID
 def update_review(selectedReviewID, rating, comment, is_recommended, requires_textbook, CRN, instructor_netid):
     conn = db.connect()
-    #not sure if this format for the ? and () works check later if not use .format()
-    conn.execute 
-    (
-        """ 
-        UPDATE Reviews 
-        SET Rating = ?, Comment = ?, IsRecommended = ?, RequiresTextbook = ?, CRN = ?, InstructorNetID = ? 
-        WHERE ReviewID = ?; 
-        """, 
-        (rating, comment, is_recommended, requires_textbook, CRN, instructor_netid, selectedReviewID)
-    )
+    query = 'UPDATE Reviews SET Rating = {}, Comment = {}, IsRecommended = {}, RequiresTextbook = {}, CRN = {}, InstructorNetID = {} WHERE ReviewID = {};'
+    conn.execute(query)
     conn.commit()
     conn.close()
 def search_reviews(keyword):

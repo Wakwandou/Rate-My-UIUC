@@ -53,8 +53,7 @@ def homepage():
    courses = db_helper.fetch_courses()
    instructors = db_helper.fetch_instructors()
    name = db_helper.search_reviews(q)
-   # if name != None:
-   #    return redirect(url_for('result'))
+   
    return render_template("index.html", reviews=reviews, courses=courses, instructors=instructors, name=name)
 # @app.route("/result")
 # def result():

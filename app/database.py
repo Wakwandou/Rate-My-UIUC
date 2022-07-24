@@ -11,14 +11,14 @@ def fetch_reviews() -> dict:
     reviews = []
     for result in query_results:
         item = {
-            "ReviewID": result[0],
+            "ReviewID": result[0].strip(),
             "Rating": result[1],
-            "Comment": result[2],
+            "Comment": result[2].strip(),
             "IsRecommended": "Yes" if result[3] else "No",
             "RequiresTextbook": "Yes" if result[4] else "No",
-            "Username": result[5],
-            "CRN": result[6],
-            "InstructorNetID": result[7]
+            "Username": result[5].strip(),
+            "CRN": result[6].strip(),
+            "InstructorNetID": result[7].strip()
         }
         reviews.append(item)
 
@@ -33,18 +33,31 @@ def fetch_courses() -> dict:
     courses = {}
     for result in query_results:
         course = {
-            "CourseName": result[1],
+            "CourseName": result[1].strip(),
             "CourseNumber": result[2],
-            "Description": result[3],
-            "DeptAbv": result[4],
-            "Course": result[4] + result[2]
+            "Description": result[3].strip(),
+            "DeptAbv": result[4].strip(),
+            "Course": result[4].strip() + result[2]
         }
-        courses[result[0]] = course
+        courses[result[0].strip()] = course
     
     return courses
 
-# def fetch_instructors() -> dict:
-
+def fetch_instructors() -> dict:
+    """Reads and returns a dictionary of instructors"""
+    conn = db.connect()
+    conn.execute("use squad;")
+    query_results = conn.execute("Select * from Instructors;").fetchall()
+    conn.close()
+    instructors = {}
+    for result in query_results:
+        instructor = {
+            "Name": result[1].strip(),
+            "DeptAbv": result[2].strip()
+        }
+        instructors[result[0].strip()] = instructor
+    
+    return instructors
 
 
 def get_name():

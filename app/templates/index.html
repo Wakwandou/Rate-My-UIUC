@@ -60,13 +60,13 @@
     <table class="table">
         <thead>
         <tr>
-            <th class="ReviewID">#</th>
-            <th class="Rating">Comment</th>
-            <th class="Comment">Rating</th>
+            <!-- <th class="ReviewID">#</th> -->
+            <th class="Username">Username</th>
+            <th class="Rating">Rating</th>
+            <th class="Comment">Comment</th>
             <th class="Is Recommended">Is Recommended</th>
             <th class="Requires Textbook">Requires Textbook</th>
-            <th class="UserNetID">UserNetID</th>
-            <th class="CRN">CRN</th>
+            <th class="Course">Course</th>
             <th class="InstructorNetID">InstructorNetID</th>
 
             <th class="update">Edit</th>
@@ -75,42 +75,41 @@
         </thead>
 
         <tbody>
-        {% for item in items %}
+        {% for review in reviews %}
             <tr>
-                <td>{{item.ReviewID}}</td>
-                <td>{{item.Rating}}</td>
-                <td>{{item.Comment}}</td>
-                <td>{{item.IsRecommended}}</td>
-                <td>{{item.RequiresTextbook}}</td>
-                <td>{{item.UserNetID}}</td>
-                <td>{{item.CRN}}</td>
-                <td>{{item.InstructorNetID}}</td>
+                <!-- <td>{{review.ReviewID}}</td> -->
+                <td>{{review.Username}}</td>
+                <td>{{review.Rating}}</td>
+                <td>{{review.Comment}}</td>
+                <td>{{review.IsRecommended}}</td>
+                <td>{{review.RequiresTextbook}}</td>
+                <td>{{courses[review.CRN].Course}}</td>
+                <td>{{review.InstructorNetID}}</td>
                 
-                {% if item.IsRecommended %}
 
-                <!-- {% if item.status == "In Progress" %}
-                    <td><button type="button" class="btn btn-outline-warning btn-sm state" data-source="{{item.id}}">{{item.status}}</button></td>
+                <!-- {% if review.status == "In Progress" %}
+                    <td><button type="button" class="btn btn-outline-warning btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
                 {%endif%}
-                {% if item.status == "Todo" %}
-                    <td><button type="button" class="btn btn-outline-secondary btn-sm state" data-source="{{item.id}}">{{item.status}}</button></td>
+                {% if review.status == "Todo" %}
+                    <td><button type="button" class="btn btn-outline-secondary btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
                 {%endif%}
-                {% if item.status == "Complete" %}
-                    <td><button type="button" class="btn btn-outline-success btn-sm state" data-source="{{item.id}}">{{item.status}}</button></td>
+                {% if review.status == "Complete" %}
+                    <td><button type="button" class="btn btn-outline-success btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
                 {%endif%} -->
                 
                 <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" 
-                    data-source="{{item.ReviewID}}" 
-                    data-content="{{item.Rating}}" 
-                    data-content="{{item.Comment}}"
-                    data-content="{{item.IsRecommended}}"
-                    data-content="{{item.RequiresTextbook}}"
-                    data-content="{{item.UserNetID}}"
-                    data-content="{{item.CRN}}"
-                    data-content="{{item.InstructorNetID}}"
+                    data-source="{{review.ReviewID}}" 
+                    data-content="{{review.Username}}"
+                    data-content="{{review.Rating}}"
+                    data-content="{{review.Comment}}"
+                    data-content="{{review.IsRecommended}}"
+                    data-content="{{review.RequiresTextbook}}"
+                    data-content="{{courses[review.CRN].Course}}"
+                    data-content="{{review.InstructorNetID}}"
 
                 ><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
 
-                <td><button class="btn btn-outline-secondary btn-sm remove" data-source="{{item.ReviewID}}" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></button></td>
+                <td><button class="btn btn-outline-secondary btn-sm remove" data-source="{{review.ReviewID}}" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></button></td>
             </tr>
         {% endfor %}
         

@@ -59,10 +59,6 @@ def fetch_instructors() -> dict:
     
     return instructors
 
-
-def get_name():
-    return random.choice(["Ann", "Bob", "Chris", "Daniel"])
-
 # average ratings for each CRN 
 def get_avg_ratings():
     conn = db.connect()
@@ -140,15 +136,7 @@ def remove_review_by_id(review_id: int) -> None:
 #updates review with ID of selectedReviewID
 def update_review(selectedReviewID, rating, comment, is_recommended, requires_textbook, CRN, instructor_netid):
     conn = db.connect()
-    #not sure if this format for the ? and () works check later if not use .format()
-    conn.execute 
-    (
-        """ 
-        UPDATE Reviews 
-        SET Rating = ?, Comment = ?, IsRecommended = ?, RequiresTextbook = ?, CRN = ?, InstructorNetID = ? 
-        WHERE ReviewID = ?; 
-        """, 
-        (rating, comment, is_recommended, requires_textbook, CRN, instructor_netid, selectedReviewID)
-    )
+    query = 'UPDATE Reviews SET Rating = {}, Comment = {}, IsRecommended = {}, RequiresTextbook = {}, CRN = {}, InstructorNetID = {} WHERE ReviewID = {};'
+    conn.execute(query)
     conn.commit()
     conn.close()

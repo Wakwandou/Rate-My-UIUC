@@ -2,11 +2,7 @@ import random
 from app import db
 
 def fetch_reviews() -> dict:
-    """Reads all tasks listed in the todo table
-
-    Returns:
-        A list of dictionaries
-    """
+    """Reads and returns a dictionary of reviews"""
 
     conn = db.connect()
     conn.execute("use squad;")
@@ -18,15 +14,38 @@ def fetch_reviews() -> dict:
             "ReviewID": result[0],
             "Rating": result[1],
             "Comment": result[2],
-            "IsRecommended": result[3],
-            "RequiresTextbook": result[4],
-            "UserNetID": result[5],
+            "IsRecommended": "Yes" if result[3] else "No",
+            "RequiresTextbook": "Yes" if result[4] else "No",
+            "Username": result[5],
             "CRN": result[6],
             "InstructorNetID": result[7]
         }
         reviews.append(item)
 
     return reviews
+
+def fetch_courses() -> dict:
+    """Reads and returns a dictionary of courses"""
+    conn = db.connect()
+    conn.execute("use squad;")
+    query_results = conn.execute("Select * from Courses;").fetchall()
+    conn.close()
+    courses = {}
+    for result in query_results:
+        course = {
+            "CourseName": result[1],
+            "CourseNumber": result[2],
+            "Description": result[3],
+            "DeptAbv": result[4],
+            "Course": result[4] + result[2]
+        }
+        courses[result[0]] = course
+    
+    return courses
+
+# def fetch_instructors() -> dict:
+
+
 
 def get_name():
     return random.choice(["Ann", "Bob", "Chris", "Daniel"])

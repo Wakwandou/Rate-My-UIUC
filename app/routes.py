@@ -49,5 +49,6 @@ def create():
 @app.route("/")
 def homepage():
     """ returns rendered homepage """
-    items = db_helper.fetch_reviews()
-    return render_template("index.html", items=items)
+    reviews = db_helper.fetch_reviews()
+    courses = db_helper.fetch_courses()
+    return render_template("index.html", reviews=reviews, courses=courses)

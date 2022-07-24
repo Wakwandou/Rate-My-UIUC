@@ -3,9 +3,6 @@ import sqlalchemy
 from flask import Flask
 from yaml import load, Loader
 
-
-
-
 def init_connect_engine():
 
     if os.environ.get('GAE_ENV') != 'standard':
@@ -27,9 +24,4 @@ def init_connect_engine():
 app = Flask(__name__)
 db = init_connect_engine()
 
-conn = db.connect()
-results = conn.execute("Select * from Courses;").fetchall()
-
-print([x for x in results])
-conn.close()
 from app import routes

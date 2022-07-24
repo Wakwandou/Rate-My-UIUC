@@ -59,10 +59,6 @@ def fetch_instructors() -> dict:
     
     return instructors
 
-
-def get_name():
-    return random.choice(["Ann", "Bob", "Chris", "Daniel"])
-
 # average ratings for each CRN 
 def get_avg_ratings():
     conn = db.connect()

@@ -7,7 +7,7 @@ $(document).ready(function () {
         const content = button.data('content') // Extract info from data-* attributes
 
         const modal = $(this)
-        if (ReviewID === 'New Task') {
+        if (ReviewID === 'New Review') {
             modal.find('.modal-title').text(ReviewID)
             $('#task-form-display').removeAttr('ReviewID')
         } else {
@@ -43,12 +43,12 @@ $(document).ready(function () {
     });
 
     $('.remove').click(function () {
-        const remove = $(this)
+        const remove = $(this);
         $.ajax({
             type: 'POST',
             url: '/delete/' + remove.data('source'),
             success: function (res) {
-                console.log(res.response)
+                console.log(res.response);
                 location.reload();
             },
             error: function () {

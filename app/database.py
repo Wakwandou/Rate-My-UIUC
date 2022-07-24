@@ -1,6 +1,65 @@
 import random
 from app import db
 
+def fetch_reviews() -> dict:
+    """Reads and returns a dictionary of reviews"""
+
+    conn = db.connect()
+    conn.execute("use squad;")
+    query_results = conn.execute("Select * from Reviews;").fetchall()
+    conn.close()
+    reviews = []
+    for result in query_results:
+        item = {
+            "ReviewID": result[0].strip(),
+            "Rating": result[1],
+            "Comment": result[2].strip(),
+            "IsRecommended": "Yes" if result[3] else "No",
+            "RequiresTextbook": "Yes" if result[4] else "No",
+            "Username": result[5].strip(),
+            "CRN": result[6].strip(),
+            "InstructorNetID": result[7].strip()
+        }
+        reviews.append(item)
+
+    return reviews
+
+def fetch_courses() -> dict:
+    """Reads and returns a dictionary of courses"""
+    conn = db.connect()
+    conn.execute("use squad;")
+    query_results = conn.execute("Select * from Courses;").fetchall()
+    conn.close()
+    courses = {}
+    for result in query_results:
+        course = {
+            "CourseName": result[1].strip(),
+            "CourseNumber": result[2],
+            "Description": result[3].strip(),
+            "DeptAbv": result[4].strip(),
+            "Course": result[4].strip() + result[2]
+        }
+        courses[result[0].strip()] = course
+    
+    return courses
+
+def fetch_instructors() -> dict:
+    """Reads and returns a dictionary of instructors"""
+    conn = db.connect()
+    conn.execute("use squad;")
+    query_results = conn.execute("Select * from Instructors;").fetchall()
+    conn.close()
+    instructors = {}
+    for result in query_results:
+        instructor = {
+            "Name": result[1].strip(),
+            "DeptAbv": result[2].strip()
+        }
+        instructors[result[0].strip()] = instructor
+    
+    return instructors
+
+
 def get_name():
     return random.choice(["Ann", "Bob", "Chris", "Daniel"])
 
@@ -49,6 +108,36 @@ def get_highest_ratings():
     print([row for row in results])
     # return results
 
+def insert_new_task(text: str) ->  int:
+    """
+    Insert new task to todo table.
+
+    Args:
+    text (str): Task description
+
+    Returns: The task ID for the inserted entry
+    """
+
+    conn = db.connect()
+    query = 'Insert Into tasks (task, status) VALUES ("{}", "{}");'.format(
+        text, "Todo")
+    conn.execute(query)
+    query_results = conn.execute("Select LAST_INSERT_ID();")
+    query_results = [x for x in query_results]
+    task_id = query_results[0][0]
+    conn.close()
+
+    return task_id
+
+
+def remove_review_by_id(review_id: int) -> None:
+    """ remove entries based on review ID """
+    conn = db.connect()
+    conn.execute("use squad;")
+    query = 'Delete From Reviews where ReviewID={};'.format(review_id)
+    conn.execute(query)
+    conn.close()
+
 #updates review with ID of selectedReviewID
 def update_review(selectedReviewID, rating, comment, is_recommended, requires_textbook, CRN, instructor_netid):
     conn = db.connect()
@@ -64,15 +153,15 @@ def update_review(selectedReviewID, rating, comment, is_recommended, requires_te
     )
     conn.commit()
     conn.close()
-def search_review(keyword):
+def search_reviews(keyword):
     conn = db.connect()
-    results = conn.execute 
-    (
-        """
-        SELECT *
-        FROM Reviews 
-        """
-    )
-    print(results)
+    # conn.execute("use squad;")
+    query = f"""
+        SELECT * 
+        FROM Reviews r 
+        WHERE r.Comment like '%%{keyword}%%';
+    """
+    results = conn.execute(query).fetchall()
+    print([row for row in results])
     return results
         

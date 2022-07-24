@@ -3,9 +3,6 @@ import sqlalchemy
 from flask import Flask
 from yaml import load, Loader
 
-
-
-
 def init_connect_engine():
 
     if os.environ.get('GAE_ENV') != 'standard':

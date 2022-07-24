@@ -27,9 +27,4 @@ def init_connect_engine():
 app = Flask(__name__)
 db = init_connect_engine()
 
-conn = db.connect()
-results = conn.execute("Select * from Courses;").fetchall()
-
-print([x for x in results])
-conn.close()
 from app import routes

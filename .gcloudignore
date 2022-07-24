@@ -1,7 +1,10 @@
 __pycache__/
 .venv
 
+<<<<<<< HEAD
 .vscode
+=======
+>>>>>>> aa4b91ceeb26cef51dc5113347083170f0cc906f
 .gcloudignore
 
 .git

@@ -51,4 +51,5 @@ def homepage():
     """ returns rendered homepage """
     reviews = db_helper.fetch_reviews()
     courses = db_helper.fetch_courses()
-    return render_template("index.html", reviews=reviews, courses=courses)
+    instructors = db_helper.fetch_instructors()
+    return render_template("index.html", reviews=reviews, courses=courses, instructors=instructors)

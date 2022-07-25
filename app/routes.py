@@ -64,5 +64,10 @@ def avg_ratings_page():
    avg_ratings = db_helper.get_avg_ratings()
    
    return render_template("avg_ratings.html", avg_ratings=avg_ratings)
-# @app.route("/result")
-# def result():
+
+@app.route("/highest_ratings")
+def highest_ratings_page():
+   """ returns each CRN along with its average rating """
+   ratings = db_helper.get_highest_ratings()
+   
+   return render_template("highest_ratings.html", ratings=ratings)

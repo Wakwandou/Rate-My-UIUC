@@ -21,7 +21,7 @@
     <main role="main" class="container extra-bottom">
       <h1 class="mt-5">Rate My UIUC</h1>
     </main>
-    
+
     <div style ="text-align: center">
         <form id="form"> 
             <input type="search" id="query" name="q" placeholder="Search..." method="GET">
@@ -32,35 +32,56 @@
         {{name}}
     </body>
     
+
     <div class="container">    
+        
         
         <!-- Button trigger modal -->
         <div style="text-align: right;">
-          <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Review">Add Review</button>
-           <a href = "http://127.0.0.1:5000/avg_ratings"  class="btn btn-outline-info btn-sm">Average Ratings</a>
+            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Review">Add Review</button>
+            <a href = "http://127.0.0.1:5000/avg_ratings"  class="btn btn-outline-info btn-sm">Average Ratings</a>
            <a href = "http://127.0.0.1:5000/highest_ratings"  class="btn btn-outline-info btn-sm">Highest Ratings</a>
         </div>
-        
-        <!-- <div style="text-align: right;">
-            <a href = "http://127.0.0.1:5000/avg_ratings"  class="btn btn-outline-info btn-sm">Average Ratings</a>
-        </div>
-         -->
-
 
         <div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Label">Add a task</h5>
+                <h5 class="modal-title" id="Label">Add a Review</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
+
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="task-form-display">Task</span>
-                    <input type="text" class="form-control" placeholder="Description of task" aria-label="task-name" aria-describedby="basic-addon1">
+                    <span class="input-group-text">Class</span>
+                    <input type="text" id="class" class="form-control" placeholder="Class" aria-label="class" aria-describedby="basic-addon1" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Rating (0-5)</span>
+                    <input type="number" id="rating" min="0" max="5" class="form-control" placeholder="Rating" aria-label="rating" aria-describedby="basic-addon1" required>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Comment</span>
+                    <textarea name="Comment" id="comment" cols="40" rows="5"></textarea required>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="recommended" value="Recommended">
+                    <label class="form-check-label" for="inlineCheckbox1">Recommended</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="textbook" value="Textbook">
+                    <label class="form-check-label" for="inlineCheckbox2">Requires Textbook</label>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Instructor</span>
+                    <input type="text" id="instructor" class="form-control" placeholder="Instructor" aria-label="instructor" aria-describedby="basic-addon1" required>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button id="submit-task" type="button" class="btn btn-primary">Save changes</button>
@@ -84,6 +105,7 @@
             <th class="Recommended">Recommended</th>
             <th class="Textbook">Textbook</th>
             <th class="Course">Course</th>
+            <th class="CourseName">Course Name</th>
             <th class="Instructor">Instructor</th>
 
             <th class="update">Edit</th>
@@ -102,28 +124,18 @@
                 <td>{{review.IsRecommended}}</td>
                 <td>{{review.RequiresTextbook}}</td>
                 <td>{{courses[review.CRN].Course}}</td>
+                <td>{{courses[review.CRN].CourseName}}</td>
                 <td>{{instructors[review.InstructorNetID].Name}}</td>
-                
-
-                <!-- {% if review.status == "In Progress" %}
-                    <td><button type="button" class="btn btn-outline-warning btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
-                {%endif%}
-                {% if review.status == "Todo" %}
-                    <td><button type="button" class="btn btn-outline-secondary btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
-                {%endif%}
-                {% if review.status == "Complete" %}
-                    <td><button type="button" class="btn btn-outline-success btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
-                {%endif%} -->
                 
                 <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" 
                     data-source="{{review.ReviewID}}" 
-                    data-content="{{review.Username}}"
-                    data-content="{{review.Rating}}"
-                    data-content="{{review.Comment}}"
-                    data-content="{{review.IsRecommended}}"
-                    data-content="{{review.RequiresTextbook}}"
-                    data-content="{{courses[review.CRN].Course}}"
-                    data-content="{{instructors[review.InstructorNetID].Name}}"
+                    data-username="{{review.Username}}"
+                    data-rating="{{review.Rating}}"
+                    data-comment="{{review.Comment}}"
+                    data-recommended="{{review.IsRecommended}}"
+                    data-textbook="{{review.RequiresTextbook}}"
+                    data-course="{{courses[review.CRN].Course}}"
+                    data-instructor="{{instructors[review.InstructorNetID].Name}}"
 
                 ><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
 

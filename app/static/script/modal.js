@@ -4,33 +4,49 @@ $(document).ready(function () {
     $('#task-modal').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget) // Button that triggered the modal
         const ReviewID = button.data('source') // Extract info from data-* attributes
-        const content = button.data('content') // Extract info from data-* attributes
+        const username = button.data('username') // Extract info from data-* attributes
+        const rating = button.data('rating') // Extract info from data-* attributes
+        const comment = button.data('comment') // Extract info from data-* attributes
+        const recommended = button.data('recommended') // Extract info from data-* attributes
+        const textbook = button.data('textbook') // Extract info from data-* attributes
+        const course = button.data('course') // Extract info from data-* attributes
+        const instructor = button.data('instructor') // Extract info from data-* attributes
 
         const modal = $(this)
-        if (ReviewID === 'New Review') {
+        if (!ReviewID) {
             modal.find('.modal-title').text(ReviewID)
             $('#task-form-display').removeAttr('ReviewID')
         } else {
-            modal.find('.modal-title').text('Edit Task ' + ReviewID)
+            modal.find('.modal-title').text('Edit Review on ' + ReviewID)
             $('#task-form-display').attr('ReviewID', ReviewID)
         }
 
-        if (content) {
-            modal.find('.form-control').val(content);
+        if (course) {
+            modal.find("#class").val(course);
+            modal.find("#rating").val(rating);
+            modal.find("#comment").val(comment);
+            modal.find("#recommended").val(recommended);
+            modal.find("#textbook").val(textbook);
+            modal.find("#instructor").val(instructor);
         } else {
             modal.find('.form-control').val('');
         }
     })
 
     $('#submit-task').click(function () {
-        const tID = $('#task-form-display').attr('ReviewID');
-        console.log($('#task-modal').find('.form-control').val())
+        const review_id = $('#task-form-display').attr('ReviewID');
+        // console.log($('#task-modal').find('.form-group').val())
         $.ajax({
             type: 'POST',
-            url: tID ? '/edit/' + tID : '/create',
+            url: review_id ? '/edit/' + review_id : '/create',
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify({
-                'description': $('#task-modal').find('.form-control').val()
+                'class': $('#task-modal').find("#class").val(),
+                'rating': $('#task-modal').find("#rating").val(),
+                'comment': $('#task-modal').find("#comment").val(),
+                'recommended': $('#task-modal').find("#recommended").is(":checked"),
+                'textbook': $('#task-modal').find("#textbook").is(":checked"),
+                'instructor': $('#task-modal').find("#instructor").val()
             }),
             success: function (res) {
                 console.log(res.response)
@@ -56,34 +72,4 @@ $(document).ready(function () {
             }
         });
     });
-
-    // $('.state').click(function () {
-    //     const state = $(this)
-    //     const tID = state.data('source')
-    //     // const new_state
-    //     // if (state.text() === "In Progress") {
-    //     //     new_state = "Complete"
-    //     // } else if (state.text() === "Complete") {
-    //     //     new_state = "Todo"
-    //     // } else if (state.text() === "Todo") {
-    //     //     new_state = "In Progress"
-    //     // }
-
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/edit/' + tID,
-    //         contentType: 'application/json;charset=UTF-8',
-    //         data: JSON.stringify({
-    //             'status': new_state
-    //         }),
-    //         success: function (res) {
-    //             console.log(res)
-    //             location.reload();
-    //         },
-    //         error: function () {
-    //             console.log('Error');
-    //         }
-    //     });
-    // });
-
 });

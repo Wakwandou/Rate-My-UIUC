@@ -2,8 +2,17 @@ from calendar import c
 import random
 from app import db
 
+def validate_review(data: dict):
+    """ Finds whether a associated course and instructor exists """
+    _, courses = fetch_courses()
+    _, instructors = fetch_instructors()
+
+    CRN = courses[data['class']]
+    InstructorNetID = instructors[data['instructor']]
+    return CRN, InstructorNetID
+
 def fetch_reviews() -> dict:
-    """Reads and returns a dictionary of reviews"""
+    """ Reads and returns a dictionary of reviews """
 
     conn = db.connect()
     conn.execute("use squad;")
@@ -12,14 +21,14 @@ def fetch_reviews() -> dict:
     reviews = []
     for result in query_results:
         item = {
-            "ReviewID": result[0].strip(),
+            "ReviewID": result[0],
             "Rating": result[1],
-            "Comment": result[2].strip(),
+            "Comment": result[2],
             "IsRecommended": "Yes" if result[3] else "No",
             "RequiresTextbook": "Yes" if result[4] else "No",
-            "Username": result[5].strip(),
-            "CRN": result[6].strip(),
-            "InstructorNetID": result[7].strip()
+            "Username": result[5],
+            "CRN": result[6],
+            "InstructorNetID": result[7]
         }
         reviews.append(item)
 
@@ -32,54 +41,60 @@ def fetch_courses() -> dict:
     query_results = conn.execute("Select * from Courses;").fetchall()
     conn.close()
     courses = {}
+    course_to_crn = {} 
+    
     for result in query_results:
         course = {
-            "CourseName": result[1].strip(),
+            "CourseName": result[1],
             "CourseNumber": result[2],
-            "Description": result[3].strip(),
-            "DeptAbv": result[4].strip(),
-            "Course": result[4].strip() + result[2]
+            "Description": result[3],
+            "DeptAbv": result[4],
+            "Course": result[4] + result[2]
         }
-        courses[result[0].strip()] = course
-    
-    return courses
+        courses[result[0]] = course
+        course_to_crn[result[4] + result[2]] = result[0]
+
+    return courses, course_to_crn
 
 def fetch_instructors() -> dict:
-    """Reads and returns a dictionary of instructors"""
+    """ Reads and returns a dictionary of instructors """
     conn = db.connect()
     conn.execute("use squad;")
     query_results = conn.execute("Select * from Instructors;").fetchall()
     conn.close()
     instructors = {}
+    name_to_netid = {}
     for result in query_results:
         instructor = {
-            "Name": result[1].strip(),
-            "DeptAbv": result[2].strip()
+            "Name": result[1],
+            "DeptAbv": result[2]
         }
-        instructors[result[0].strip()] = instructor
-    
-    return instructors
+        instructors[result[0]] = instructor
+        name_to_netid[result[1]] = result[0]
+
+    return instructors, name_to_netid
 
 # average ratings for each CRN 
 def get_avg_ratings():
     conn = db.connect()
     conn.execute("use squad;")
     results = conn.execute ("""
-        SELECT c.CRN, c.DeptAbv, c.CourseNumber, c.CourseName, AVG(r.Rating) 
+        SELECT c.CRN, c.DeptAbv, c.CourseNumber, c.CourseName, c.Description, AVG(r.Rating), r.InstructorNetID 
         FROM Reviews r 
         LEFT JOIN Courses c ON r.CRN = c.CRN 
         LEFT JOIN Enrollments e ON c.CRN = e.CRN 
-        GROUP BY c.CRN
+        GROUP BY c.CRN, r.InstructorNetID
         ORDER BY c.DeptAbv, c.CourseNumber; """).fetchall()
     conn.close()
     CRNs = []
     for result in results:
         CRN = {
             "CRN": result[0],
-            "deptAbv": result[1],
-            "courseNumber": result[2],
-            "courseName": result[3],
-            "avgRating": result[4]
+            "Course": result[1]+result[2],
+            "CourseName": result[3],
+            "Description": result[4],
+            "avgRating": round(result[5],2),
+            "InstructorNetID": result[6]
         }
         CRNs.append(CRN)
 
@@ -125,52 +140,55 @@ def get_highest_ratings():
 
     return ratings
 
-def insert_new_task(text: str) ->  int:
-    """
-    Insert new task to todo table.
-
-    Args:
-    text (str): Task description
-
-    Returns: The task ID for the inserted entry
-    """
+def insert_review(data: dict):
+    reviewID = random.randint(0, 10000)
+    while(reviewID) in list(fetch_courses()):
+        reviewID = random.randint(0, 10000)
+        
+    CRN, InstructorNetID = validate_review(data)
+    recommended = int(data['recommended'])
+    textbook = int(data['textbook'])
 
     conn = db.connect()
-    query = 'Insert Into tasks (task, status) VALUES ("{}", "{}");'.format(
-        text, "Todo")
+    conn.execute("use squad;")
+    query = 'Insert Into Reviews (ReviewID, Rating, Comment, IsRecommended, RequiresTextbook, Username, CRN, InstructorNetID) VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(reviewID, data['rating'], data['comment'], recommended, textbook, "username1", CRN, InstructorNetID)
     conn.execute(query)
-    query_results = conn.execute("Select LAST_INSERT_ID();")
-    query_results = [x for x in query_results]
-    task_id = query_results[0][0]
     conn.close()
 
-    return task_id
+    # return task_id
 
 
-def remove_review_by_id(review_id: int) -> None:
+def remove_review_by_id(review_id: str) -> None:
     """ remove entries based on review ID """
     conn = db.connect()
     conn.execute("use squad;")
-    query = 'DELETE FROM Reviews WHERE ReviewID = \"{}\";'.format(review_id)
+    query = 'Delete From Reviews Where ReviewID="{}";'.format(review_id)
     conn.execute(query)
+    db.session.commit()
     conn.close()
 
 #updates review with ID of selectedReviewID
-def update_review(selectedReviewID, rating, comment, is_recommended, requires_textbook, CRN, instructor_netid):
+def update_review(review_id, data):
+    
+    CRN, InstructorNetID = validate_review(data)
+    recommended = int(data['recommended'])
+    textbook = int(data['textbook'])
+
     conn = db.connect()
-    query = 'UPDATE Reviews SET Rating = {}, Comment = {}, IsRecommended = {}, RequiresTextbook = {}, CRN = {}, InstructorNetID = {} WHERE ReviewID = {};'
+    conn.execute("use squad;")
+    query = 'UPDATE Reviews SET Rating = "{}", Comment = "{}", IsRecommended = "{}", RequiresTextbook = "{}", CRN = "{}", InstructorNetID = "{}" WHERE ReviewID = "{}";'.format(data['rating'], data['comment'], recommended, textbook, "username1", CRN, InstructorNetID, review_id)
     conn.execute(query)
     conn.commit()
     conn.close()
+
 def search_reviews(keyword):
     conn = db.connect()
-    # conn.execute("use squad;")
+    conn.execute("use squad;")
     query = f"""
         SELECT * 
-        FROM Reviews r inner join Courses c on r.CRN = c.CRN inner join Departments d on d.DeptAbv = c.DeptAbv inner join Instructors i on i.NetID = r.InstructorNetID
-        WHERE i.Name like '%%{keyword}%%' or c.CourseName like '%%{keyword}%%' or r.Comment like '%%{keyword}%%' or d.DeptName like '%%{keyword}%%';
+        FROM Reviews r 
+        WHERE r.Comment like '%%{keyword}%%';
     """
     results = conn.execute(query).fetchall()
     print([row for row in results])
     return results
-        

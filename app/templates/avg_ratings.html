@@ -21,24 +21,6 @@
     <main role="main" class="container extra-bottom">
       <h1 class="mt-5" style="text-align:center;">Average Ratings by CRN</h1>
     </main>
-    
-    <!-- <div style ="text-align: center">
-        <form id="form"> 
-            <input type="search" id="query" name="q" placeholder="Search..." method="GET">
-            <button>Search</button>
-        </form>
-    </div> -->
-    <!-- <body style ="text-align: center">
-        {{name}}
-    </body> -->
-    
-    <!-- <div class="container">    
-        
-        <!-- Button trigger modal -->
-        <!-- <div style="text-align: right;">
-        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Review">Add Review</button>
-        </div> -->
-
         
         <div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
         <div class="modal-dialog">
@@ -61,8 +43,7 @@
             </div>
         </div>
         </div>
-
-    </div> -->
+    </div>
 
     <div style="text-align:center;">
         <a href = "http://127.0.0.1:5000/"  class="btn btn-outline-info btn-sm">Home</a>
@@ -75,9 +56,10 @@
             <!-- Change table title -->
             <!-- <th class="ReviewID">#</th> -->
             <th class="CRN">CRN</th>
-            <th class="DeptAbv">DeptAbv</th>
-            <th class="Course Number">Course Number</th>
+            <th class="Course">Course</th>
             <th class="Course Name">Course Name</th>
+            <th class="Instructor">Instructor</th>
+            <th class="Description">Description</th>
             <th class="Average Rating">Average Rating</th>
         </tr>
         </thead>
@@ -86,23 +68,18 @@
         {% for avg_rating in avg_ratings %}
             <tr>
                 <!-- Change what is displayed -->
-              
                 <td>{{avg_rating.CRN}}</td>
-                <td>{{avg_rating.deptAbv}}</td>
-                <td>{{avg_rating.courseNumber}}</td>
-                <td>{{avg_rating.courseName}}</td>
+                <td>{{avg_rating.Course}}</td>
+                <td>{{avg_rating.CourseName}}</td>
+                <td>{{instructors[avg_rating.InstructorNetID].Name}}</td>
+                <td><div style="height:50px;overflow:auto;">{{avg_rating.Description}}</div></td>
                 <td>{{avg_rating.avgRating}}</td>
-                
-                
-                
             </tr>
         {% endfor %}
         
         </tbody>
     </table>
     </div>
-
-
 
     <footer class="footer">
       <div class="container">

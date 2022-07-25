@@ -19,32 +19,27 @@
     <body>
 
     <main role="main" class="container extra-bottom">
-      <h1 class="mt-5">Rate My UIUC</h1>
+      <h1 class="mt-5">Average Ratings by CRN</h1>
     </main>
     
-    <div style ="text-align: center">
+    <!-- <div style ="text-align: center">
         <form id="form"> 
             <input type="search" id="query" name="q" placeholder="Search..." method="GET">
             <button>Search</button>
         </form>
-    </div>
-    <body style ="text-align: center">
+    </div> -->
+    <!-- <body style ="text-align: center">
         {{name}}
-    </body>
+    </body> -->
     
-    <div class="container">    
+    <!-- <div class="container">    
         
         <!-- Button trigger modal -->
-        <div style="text-align: right;">
+        <!-- <div style="text-align: right;">
         <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Review">Add Review</button>
-        </div>
-        
-        <div style="text-align: right;">
-            <a href = "http://127.0.0.1:5000/avg_ratings"  class="btn btn-outline-info btn-sm">Average Ratings</a>
-        </div>
-        
+        </div> -->
 
-
+        
         <div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -67,8 +62,11 @@
         </div>
         </div>
 
-    </div>
+    </div> -->
 
+    <div style="text-align:center;">
+        <a href = "http://127.0.0.1:5000/"  class="btn btn-outline-info btn-sm">Home</a>
+    </div>
     <!--Todo Table-->
     <div class="container table-responsive">          
     <table class="table">
@@ -76,56 +74,27 @@
         <tr>
             <!-- Change table title -->
             <!-- <th class="ReviewID">#</th> -->
-            <th class="Username">Username</th>
-            <th class="Rating">Rating</th>
-            <th class="Comment">Comment</th>
-            <th class="Recommended">Recommended</th>
-            <th class="Textbook">Textbook</th>
-            <th class="Course">Course</th>
-            <th class="Instructor">Instructor</th>
-
-            <th class="update">Edit</th>
-            <th class="remove">Remove</th>
+            <th class="CRN">CRN</th>
+            <th class="DeptAbv">DeptAbv</th>
+            <th class="Course Number">Course Number</th>
+            <th class="Course Name">Course Name</th>
+            <th class="Average Rating">Average Rating</th>
         </tr>
         </thead>
 
         <tbody>
-        {% for review in reviews %}
+        {% for avg_rating in avg_ratings %}
             <tr>
                 <!-- Change what is displayed -->
-                <!-- <td>{{review.ReviewID}}</td> -->
-                <td>{{review.Username}}</td>
-                <td>{{review.Rating}}</td>
-                <td>{{review.Comment}}</td>
-                <td>{{review.IsRecommended}}</td>
-                <td>{{review.RequiresTextbook}}</td>
-                <td>{{courses[review.CRN].Course}}</td>
-                <td>{{instructors[review.InstructorNetID].Name}}</td>
+              
+                <td>{{avg_rating.CRN}}</td>
+                <td>{{avg_rating.deptAbv}}</td>
+                <td>{{avg_rating.courseNumber}}</td>
+                <td>{{avg_rating.courseName}}</td>
+                <td>{{avg_rating.avgRating}}</td>
                 
-
-                <!-- {% if review.status == "In Progress" %}
-                    <td><button type="button" class="btn btn-outline-warning btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
-                {%endif%}
-                {% if review.status == "Todo" %}
-                    <td><button type="button" class="btn btn-outline-secondary btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
-                {%endif%}
-                {% if review.status == "Complete" %}
-                    <td><button type="button" class="btn btn-outline-success btn-sm state" data-source="{{review.id}}">{{review.status}}</button></td>
-                {%endif%} -->
                 
-                <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" 
-                    data-source="{{review.ReviewID}}" 
-                    data-content="{{review.Username}}"
-                    data-content="{{review.Rating}}"
-                    data-content="{{review.Comment}}"
-                    data-content="{{review.IsRecommended}}"
-                    data-content="{{review.RequiresTextbook}}"
-                    data-content="{{courses[review.CRN].Course}}"
-                    data-content="{{instructors[review.InstructorNetID].Name}}"
-
-                ><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
-
-                <td><button class="btn btn-outline-secondary btn-sm remove" data-source="{{review.ReviewID}}" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></button></td>
+                
             </tr>
         {% endfor %}
         

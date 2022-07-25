@@ -57,4 +57,12 @@ def homepage():
    return render_template("index.html", reviews=reviews, courses=courses, instructors=instructors, name=name)
 # @app.route("/result")
 # def result():
+
+@app.route("/avg_ratings")
+def avg_ratings_page():
+   """ returns each CRN along with its average rating """
+   avg_ratings = db_helper.get_avg_ratings()
    
+   return render_template("avg_ratings.html", avg_ratings=avg_ratings)
+# @app.route("/result")
+# def result():

@@ -59,7 +59,7 @@ def avg_ratings_page():
 
 @app.route("/highest_ratings")
 def highest_ratings_page():
-    """ returns each CRN along with its average rating """
+    """ returns each course along with the professor with the highest average rating for it """
     ratings = db_helper.get_highest_ratings()
     
     return render_template("highest_ratings.html", ratings=ratings)

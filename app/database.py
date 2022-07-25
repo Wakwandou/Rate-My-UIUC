@@ -89,31 +89,41 @@ def get_avg_ratings():
 def get_highest_ratings():
     conn = db.connect()
     conn.execute("use squad;")
-    results = conn.execute 
-    (
-        """ 
+    results = conn.execute("""
         SELECT DISTINCT i.Name, s2.DeptAbv, s2.CourseNumber, s2.maxRating
         FROM (
                 SELECT MAX(s1.avgRating) as maxRating, s1.DeptAbv, s1.CourseNumber
                 FROM (
-                        SELECT AVG(r.Rating) as avgRating, c.DeptAbv, c.CourseNumber, r.InstructorNetID 
+                        SELECT AVG(r.Rating) as avgRating, c.DeptAbv, c.CourseNumber, r.InstructorNetID, c.CourseName 
                         FROM Reviews r 
                         LEFT JOIN Courses c ON r.CRN = c.CRN 
-                        GROUP BY c.DeptAbv, c.CourseNumber, r.InstructorNetID
+                        GROUP BY c.DeptAbv, c.CourseNumber, r.InstructorNetID, c.CourseName
                     ) AS s1 
                 GROUP BY s1.DeptAbv, s1.CourseNumber) AS s2 
                 LEFT JOIN (
                             SELECT AVG(r2.Rating) as avgRating, c2.DeptAbv, c2.CourseNumber, r2.InstructorNetID 
                             FROM Reviews r2 LEFT JOIN Courses c2 ON r2.CRN = c2.CRN 
                             GROUP BY c2.DeptAbv, c2.CourseNumber, r2.InstructorNetID
-                        ) AS s3 ON s2.maxRating = s3.avgRating AND s2.DeptAbv = s3.DeptAbv AND s2.CourseNumber = s3.CourseNumber 
-                LEFT JOIN Instructors i ON s3.InstructorNetID = i.NetID
-        LIMIT 15;
- 
-        """ 
-    ).fetchall()
+                        ) AS s3 
+                ON s2.maxRating = s3.avgRating AND s2.DeptAbv = s3.DeptAbv AND s2.CourseNumber = s3.CourseNumber 
+                LEFT JOIN Instructors i 
+                ON s3.InstructorNetID = i.NetID
+                ORDER BY s2.DeptAbv, s2.CourseNumber;
+                """).fetchall()
+    conn.close()
+    ratings = []
 
-    return results
+    for result in results:
+        rating = {
+            "deptAbv": result[1],
+            "courseNum": result[2],
+            # "courseName":result[4],
+            "instructor": result[0],
+            "avgRating": result[3]
+        }
+        ratings.append(rating)
+
+    return ratings
 
 def insert_new_task(text: str) ->  int:
     """

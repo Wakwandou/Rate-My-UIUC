@@ -38,14 +38,15 @@ def create():
 
 @app.route("/")
 def homepage():
-#    q = request.args.get('q')
-   """ returns rendered homepage """
-   reviews = db_helper.fetch_reviews()
-   courses, _ = db_helper.fetch_courses()
-   instructors, _ = db_helper.fetch_instructors()
-#    name = db_helper.search_reviews(q)
-   
-   return render_template("index.html", reviews=reviews, courses=courses, instructors=instructors)
+    q = request.args.get('q')
+    """ returns rendered homepage """
+    reviews = db_helper.fetch_reviews()
+    courses, _ = db_helper.fetch_courses()
+    instructors, _ = db_helper.fetch_instructors()
+    keyword, searches = db_helper.search_reviews(q)
+    if(keyword):
+        reviews = searches
+    return render_template("index.html", reviews=reviews, courses=courses, instructors=instructors, keyword=keyword)
 # @app.route("/result")
 # def result():
 

@@ -184,11 +184,23 @@ def update_review(review_id, data):
 def search_reviews(keyword):
     conn = db.connect()
     conn.execute("use squad;")
-    query = f"""
-        SELECT * 
-        FROM Reviews r 
-        WHERE r.Comment like '%%{keyword}%%';
-    """
+    query = 'SELECT r.ReviewID, r.Rating, r.Comment, r.IsRecommended, r.RequiresTextbook, r.Username, r.CRN, r.InstructorNetID FROM Reviews r inner join Courses c on r.CRN = c.CRN inner join Departments d on d.DeptAbv = c.DeptAbv inner join Instructors i on i.NetID = r.InstructorNetID WHERE c.Course="{}" or r.Comment LIKE "{}" OR c.DeptAbv="{}" or i.Name="{}" or i.NetID="{}" or c.CRN="{}";'.format(keyword,keyword,keyword,keyword,keyword,keyword)
+
     results = conn.execute(query).fetchall()
-    print([row for row in results])
-    return results
+    conn.close()
+
+    reviews = []
+    for result in results:
+        item = {
+            "ReviewID": result[0],
+            "Rating": result[1],
+            "Comment": result[2],
+            "IsRecommended": "Yes" if result[3] else "No",
+            "RequiresTextbook": "Yes" if result[4] else "No",
+            "Username": result[5],
+            "CRN": result[6],
+            "InstructorNetID": result[7]
+        }
+        reviews.append(item)
+
+    return keyword, reviews

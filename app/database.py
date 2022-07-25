@@ -63,7 +63,7 @@ def fetch_instructors() -> dict:
 # average ratings for each CRN 
 def get_avg_ratings():
     conn = db.connect()
-    # conn.execute("use squad;")
+    conn.execute("use squad;")
     results = conn.execute ("""
         SELECT c.CRN, c.DeptAbv, c.CourseNumber, c.CourseName, AVG(r.Rating) 
         FROM Reviews r 
@@ -84,9 +84,7 @@ def get_avg_ratings():
         CRNs.append(CRN)
 
     return CRNs
-    # return results
-    print([row for row in results])
-
+    
 # returns the most highly rated professors name and their rating for all courses (identified by the coursenumber and deptabv)
 def get_highest_ratings():
     conn = db.connect()
@@ -116,7 +114,6 @@ def get_highest_ratings():
     ).fetchall()
 
     return results
-    # print([row for row in results])
 
 def insert_new_task(text: str) ->  int:
     """

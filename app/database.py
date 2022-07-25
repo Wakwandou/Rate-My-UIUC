@@ -167,8 +167,8 @@ def search_reviews(keyword):
     # conn.execute("use squad;")
     query = f"""
         SELECT * 
-        FROM Reviews r 
-        WHERE r.Comment like '%%{keyword}%%';
+        FROM Reviews r inner join Courses c on r.CRN = c.CRN inner join Departments d on d.DeptAbv = c.DeptAbv inner join Instructors i on i.NetID = r.InstructorNetID
+        WHERE i.Name like '%%{keyword}%%' or c.CourseName like '%%{keyword}%%' or r.Comment like '%%{keyword}%%' or d.DeptName like '%%{keyword}%%';
     """
     results = conn.execute(query).fetchall()
     print([row for row in results])

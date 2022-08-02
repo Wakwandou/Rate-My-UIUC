@@ -2,6 +2,67 @@ from calendar import c
 import random
 from app import db
 
+def user_exists(username, netid):
+    conn = db.connect()
+    conn.execute("use squad;")
+    query = 'Select Username from Users WHERE Username="{}" OR NetID="{}";'.format(username, netid)
+    result = conn.execute(query).fetchall()
+    return bool(result)
+
+def login_verification(username, password):
+    if not user_exists(username, username):
+        return False
+    conn = db.connect()
+    conn.execute("use squad;")
+    query = 'Select Password from Users WHERE Username="{}";'.format(username)
+    result = conn.execute(query).fetchall()[0]
+    return password==result[0]
+
+def register_user(username, password, netid):
+    conn = db.connect()
+    conn.execute("use squad;")
+    query = 'Insert Into Users (NetID, Username, Password, IsGuest) VALUES ("{}", "{}", "{}", "{}");'.format(netid, username, password, 0)
+    conn.execute(query)
+    conn.close()
+    return True
+
+def retrieve_profile(username):
+    if not user_exists(username, username):
+        return []
+    conn = db.connect()
+    conn.execute("use squad;")
+    query = 'Select Username, Password, NetID from Users WHERE Username="{}";'.format(username)
+    result = conn.execute(query).fetchall()[0]
+    print(result[0])
+    return {"username": result[0], "password": result[1], "netid": result[2]}
+
+def fetch_reviews_by_user(username) -> dict:
+    """ Reads and returns a dictionary of reviews """
+    conn = db.connect()
+    conn.execute("use squad;")
+    results = conn.execute ("""
+        Select ReviewID, Rating, Comment, IsRecommended, RequiresTextbook, Username, Course, CourseName, Name 
+        From Reviews r JOIN Courses c on r.CRN=c.CRN JOIN Instructors i on r.InstructorNetID=i.NetID 
+        WHERE Username="{}"
+    """.format(username)).fetchall()
+
+    conn.close()
+    user_reviews = []
+    for result in results:
+        review = {
+            "ReviewID": result[0],
+            "Rating": result[1],
+            "Comment": result[2],
+            "IsRecommended": "Yes" if result[3] else "No",
+            "RequiresTextbook": "Yes" if result[4] else "No",
+            "Username": result[5],
+            "Course": result[6],
+            "CourseName": result[7],
+            "InstructorName": result[8]
+        }
+        user_reviews.append(review)
+    return user_reviews
+
 def validate_review(data: dict):
     """ Finds whether a associated course and instructor exists """
     _, courses = fetch_courses()
@@ -13,7 +74,6 @@ def validate_review(data: dict):
 
 def fetch_reviews() -> dict:
     """ Reads and returns a dictionary of reviews """
-
     conn = db.connect()
     conn.execute("use squad;")
     query_results = conn.execute("Select * from Reviews;").fetchall()
@@ -31,7 +91,6 @@ def fetch_reviews() -> dict:
             "InstructorNetID": result[7]
         }
         reviews.append(item)
-
     return reviews
 
 def fetch_courses() -> dict:

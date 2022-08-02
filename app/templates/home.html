@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Home page</title>
@@ -12,5 +12,49 @@
 <body>
 <h1>hi {{nam}}!</h1>
     </body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+	</head>
+	<body class="loggedin">
+		<nav class="navtop">
+			<div>
+				<h1>Rate My UIUC</h1>
+                <a href="{{ url_for('home') }}"><i class="fas fa-home"></i>Home</a>
+				<a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i>Profile</a>
+				<a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
+				<a href="{{ url_for('add_review') }}"><i class="fa fa-pen fa-1"></i>Add Review</a>
+			</div>
+		</nav>
+		<div class="content">
+			{% block content %}{% endblock %}
+		</div>
+	</body>
+	
+	<main role="main" class="container extra-bottom">
+		<h1 class="mt-5"></h1>
+	  </main>
+  
+	  <div style ="text-align: center">
+		  <form id="form"> 
+			  <input type="search" id="query" name="q" placeholder="Search..." method="GET">
+			  <button>Search</button>
+		  </form>
+	  </div>
+  
+	  <div style ="text-align: center">
+	  {% if keyword: %}
+		  <h4>Current Keyword: {{keyword}}</h4>
+	  {% else: %}
+		  <h4>No Keyword</h4>
+	  {% endif %}
+	  </div>
 
 </html>

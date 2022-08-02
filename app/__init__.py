@@ -2,6 +2,7 @@ import os
 import sqlalchemy
 from flask import Flask
 from yaml import load, Loader
+from datetime import timedelta
 
 def init_connect_engine():
 
@@ -22,6 +23,9 @@ def init_connect_engine():
     )
     return pool
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'xxxxxxxxx'
+app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=10)
+
 db = init_connect_engine()
 
 from app import routes

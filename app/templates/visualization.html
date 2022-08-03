@@ -71,7 +71,7 @@
 
 		<div style ="text-align: center">
 			<form id="form">
-				<input type="search" id="query" name="q" placeholder="Search..." method="GET" autocomplete="off">
+				<input type="search" id="query" name="q" placeholder="Search Course..." method="GET" autocomplete="off">
 				<button>Search</button>
 			</form>
 		</div>
@@ -85,7 +85,9 @@
 		</div>
 
         <div style ="text-align: center">
-            <h4>Instructor with Highest Average Rating: {{ratings[0].instructor}} | {{ratings[0].avgRating}}</h4>
+            {% for rating in ratings %}
+                <h4>Instructor with Highest Average Rating: {{rating.instructor}} | {{rating.avgRating}}</h4>
+            {% endfor %}
         </div>
         
 

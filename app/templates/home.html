@@ -1,20 +1,3 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Home page</title>
-</head>
-<div>
-<form id="form"> 
-    <input type="search" id="query" name="q" placeholder="Search..." method="GET">
-    <button>Search</button>
-</form>
-</div>
-<body>
-<h1>hi {{nam}}!</h1>
-    </body>
-
-</html> -->
-
 <!DOCTYPE html>
 <html>
 	<head>
@@ -22,6 +5,7 @@
 		<title>{% block title %}{% endblock %}</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	</head>
 	<body class="loggedin">
 		<nav class="navtop">
@@ -30,31 +14,116 @@
                 <a href="{{ url_for('home') }}"><i class="fas fa-home"></i>Home</a>
 				<a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i>Profile</a>
 				<a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
-				<a href="{{ url_for('add_review') }}"><i class="fa fa-pen fa-1"></i>Add Review</a>
+				<!-- <a href="{{ url_for('add_review') }}"><i class="fa fa-pen fa-1"></i>Add Review</a> -->
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#review" onclick="this.blur();"><i class="fa fa-pen fa-1"></i>Add Review</button>
 			</div>
 		</nav>
-		<div class="content">
-			{% block content %}{% endblock %}
-		</div>
-	</body>
+
+		<form id="form">
+		<div class="modal fade" id="review" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title" id="Label">Add a Review</h2>
+				</div>
+				<div class="modal-body">
+						<div class="form-group">
+							<label for="course" class="col-form-label">Course Name:</label>
+							<input type="text" class="form-control" id="course" placeholder="ie. CS411" required="true">
+						</div>
+						<div class="form-group">
+							<label for="instructor" class="col-form-label">Instructor Name:</label>
+							<input type="text" id="instructor" class="form-control" placeholder="Instructor Name" required="true">
+						</div>
+						<div class="form-group">
+							<label for="rating" class="col-form-label">Rating (1-5):</label>
+							<input type="number" id="rating" class="form-control" min="1" max="5" placeholder="(1-5)" required="true">
+						</div>
+						<div class="form-group">
+							<label for="comment" class="col-form-label">Comments:</label>
+							<textarea class="form-control" id="comment" placeholder="Write your thoughts on this course" required="true"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="recommended" class="col-form-label">Recommended:</label>
+							<input type="checkbox" id="recommended" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="textbook" class="col-form-label">Textbook:</label>
+							<input type="checkbox" id="textbook" class="form-control">
+						</div>
+				</div>
 	
-	<main role="main" class="container extra-bottom">
-		<h1 class="mt-5"></h1>
-	  </main>
-  
-	  <div style ="text-align: center">
-		  <form id="form"> 
-			  <input type="search" id="query" name="q" placeholder="Search..." method="GET">
-			  <button>Search</button>
-		  </form>
-	  </div>
-  
-	  <div style ="text-align: center">
-	  {% if keyword: %}
-		  <h4>Current Keyword: {{keyword}}</h4>
-	  {% else: %}
-		  <h4>No Keyword</h4>
-	  {% endif %}
-	  </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" id="submit">Submit Review</button>
+					<!-- <button id="submit-task" type="button" class="btn btn-primary">Submit Review</button> -->
+				</div>
+				</div>
+			</div>
+		</div>
+		</form>
+		
+		<!-- Searchbox  -->
+		<main role="main" class="container extra-bottom">
+			<h1 class="mt-5"></h1>
+		</main>
+	
+		<div style ="text-align: center">
+			<form id="form"> 
+				<input type="search" id="query" name="q" placeholder="Search..." method="GET">
+				<button>Search</button>
+			</form>
+		</div>
+	
+		<div style ="text-align: center">
+		{% if keyword: %}
+			<h4>Current Keyword: {{keyword}}</h4>
+		{% else: %}
+			<h4>No Keyword</h4>
+		{% endif %}
+		</div>
+
+		<!-- Reviews -->
+	  	<div class="container table-responsive">          
+			<table class="table">
+				<thead>
+				<tr>
+					<!-- Change table header -->
+					<th class="Username">Username</th>
+					<th class="Rating">Rating</th>
+					<th class="Comment">Comment</th>
+					<th class="Recommended">Recommended</th>
+					<th class="Textbook">Textbook</th>
+					<th class="Course">Course</th>
+					<th class="CourseName">Course Name</th>
+					<th class="Instructor">Instructor</th>
+				</tr>
+				</thead>
+		
+				<tbody>
+				{% for review in reviews %}
+					<tr>
+						<!-- Actual content -->
+						<td>{{review.Username}}</td>
+						<td>{{review.Rating}}</td>
+						<td>{{review.Comment}}</td>
+						<td>{{review.IsRecommended}}</td>
+						<td>{{review.RequiresTextbook}}</td>
+						<td>{{review.Course}}</td>
+						<td>{{review.CourseName}}</td>
+						<td>{{review.InstructorName}}</td>
+					</tr>
+				{% endfor %}
+				
+				</tbody>
+			</table>
+        </div>
+	</body>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='script/modal.js') }}"></script>
 
 </html>

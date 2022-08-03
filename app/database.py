@@ -44,7 +44,7 @@ def fetch_reviews_by_user(username) -> dict:
         Select ReviewID, Rating, Comment, IsRecommended, RequiresTextbook, Username, Course, CourseName, Name 
         From Reviews r JOIN Courses c on r.CRN=c.CRN JOIN Instructors i on r.InstructorNetID=i.NetID 
         WHERE Username="{}"
-    """.format(username)).fetchall()
+        """.format(username)).fetchall()
 
     conn.close()
     user_reviews = []
@@ -199,7 +199,7 @@ def get_highest_ratings():
 
     return ratings
 
-def insert_review(data: dict):
+def insert_review(username, data: dict):
     reviewID = random.randint(0, 10000)
     while(reviewID) in list(fetch_courses()):
         reviewID = random.randint(0, 10000)
@@ -210,11 +210,10 @@ def insert_review(data: dict):
 
     conn = db.connect()
     conn.execute("use squad;")
-    query = 'Insert Into Reviews (ReviewID, Rating, Comment, IsRecommended, RequiresTextbook, Username, CRN, InstructorNetID) VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(reviewID, data['rating'], data['comment'], recommended, textbook, "username1", CRN, InstructorNetID)
+    query = 'Insert Into Reviews (ReviewID, Rating, Comment, IsRecommended, RequiresTextbook, Username, CRN, InstructorNetID) VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(reviewID, data['rating'], data['comment'], recommended, textbook, username, CRN, InstructorNetID)
     conn.execute(query)
+    db.session.commit()
     conn.close()
-
-    # return task_id
 
 
 def remove_review_by_id(review_id: str) -> None:
@@ -237,29 +236,56 @@ def update_review(review_id, data):
     conn.execute("use squad;")
     query = 'UPDATE Reviews SET Rating = "{}", Comment = "{}", IsRecommended = "{}", RequiresTextbook = "{}", CRN = "{}", InstructorNetID = "{}" WHERE ReviewID = "{}";'.format(data['rating'], data['comment'], recommended, textbook, "username1", CRN, InstructorNetID, review_id)
     conn.execute(query)
-    conn.commit()
+    db.session.commit()
     conn.close()
 
 def search_reviews(keyword):
     conn = db.connect()
     conn.execute("use squad;")
-    query = 'SELECT r.ReviewID, r.Rating, r.Comment, r.IsRecommended, r.RequiresTextbook, r.Username, r.CRN, r.InstructorNetID FROM Reviews r inner join Courses c on r.CRN = c.CRN inner join Departments d on d.DeptAbv = c.DeptAbv inner join Instructors i on i.NetID = r.InstructorNetID WHERE c.Course="{}" or r.Comment LIKE "{}" OR c.DeptAbv="{}" or i.Name="{}" or i.NetID="{}" or c.CRN="{}";'.format(keyword,keyword,keyword,keyword,keyword,keyword)
+    results = conn.execute ("""
+        Select ReviewID, Rating, Comment, IsRecommended, RequiresTextbook, Username, Course, CourseName, Name 
+        From Reviews r JOIN Courses c on r.CRN=c.CRN JOIN Instructors i on r.InstructorNetID=i.NetID JOIN Departments d on c.DeptAbv=d.DeptAbv
+        WHERE c.Course="{}" or r.Comment LIKE "{}" OR c.DeptAbv="{}" or i.Name="{}" or i.NetID="{}" or c.CRN="{}" or d.DeptName="{}"
+        """.format(keyword,keyword,keyword,keyword,keyword,keyword,keyword)).fetchall()
 
-    results = conn.execute(query).fetchall()
     conn.close()
-
-    reviews = []
+    searched_reviews = []
     for result in results:
-        item = {
+        review = {
             "ReviewID": result[0],
             "Rating": result[1],
             "Comment": result[2],
             "IsRecommended": "Yes" if result[3] else "No",
             "RequiresTextbook": "Yes" if result[4] else "No",
             "Username": result[5],
-            "CRN": result[6],
-            "InstructorNetID": result[7]
+            "Course": result[6],
+            "CourseName": result[7],
+            "InstructorName": result[8]
         }
-        reviews.append(item)
+        searched_reviews.append(review)
+    return keyword, searched_reviews
 
-    return keyword, reviews
+
+
+    # conn = db.connect()
+    # conn.execute("use squad;")
+    # query = 'WHERE c.Course="{}" or r.Comment LIKE "{}" OR c.DeptAbv="{}" or i.Name="{}" or i.NetID="{}" or c.CRN="{}";'.format(keyword,keyword,keyword,keyword,keyword,keyword,keyword)
+
+    # results = conn.execute(query).fetchall()
+    # conn.close()
+
+    # reviews = []
+    # for result in results:
+    #     item = {
+    #         "ReviewID": result[0],
+    #         "Rating": result[1],
+    #         "Comment": result[2],
+    #         "IsRecommended": "Yes" if result[3] else "No",
+    #         "RequiresTextbook": "Yes" if result[4] else "No",
+    #         "Username": result[5],
+    #         "CRN": result[6],
+    #         "InstructorNetID": result[7]
+    #     }
+    #     reviews.append(item)
+
+    # return keyword, reviews

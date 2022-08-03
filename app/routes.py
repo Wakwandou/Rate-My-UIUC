@@ -67,9 +67,15 @@ def home():
     # Check if user is loggedin
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('home.html', username=session['username'])
+        q = request.args.get('q')
+        """ returns rendered homepage """
+        keyword, searched_reviews = db_helper.search_reviews(q)
+        return render_template("home.html", username=session['username'], reviews=searched_reviews, keyword=keyword)
+
+        # return render_template('home.html', username=session['username'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
+
 
 @app.route('/profile')
 def profile():
@@ -93,7 +99,7 @@ def add_review():
 @app.route("/delete/<string:review_id>", methods=['POST'])
 def delete(review_id):
     """ recieved post requests for entry delete """
-
+    print(review_id)
     try:
         db_helper.remove_review_by_id(review_id)
         result = {'success': True, 'response': 'Removed task'}
@@ -120,8 +126,10 @@ def update(review_id):
 def create():
     """ receives post requests to add new task """
     data = request.get_json()
-    db_helper.insert_review(data)
+    print(data)
+    db_helper.insert_review(session["username"], data)
     result = {'success': True, 'response': 'Done'}
+    print(result)
     return jsonify(result)
 
 @app.route("/search")

@@ -165,6 +165,7 @@ def visualize():
 
     """ returns a page that generates visualizations of averages ratings for each professor teaching a course """
     stats = db_helper.get_reviews_avg(course_keyword)
+    ratings = db_helper.get_highest_ratings(course_keyword)
 
     if(stats):
         instructors = []
@@ -184,4 +185,4 @@ def visualize():
         FigureCanvas(fig).print_png(pngImage)
         img_data = "data:image/png;base64," + base64.b64encode(pngImage.getvalue()).decode('utf8')
 
-    return render_template("visualization.html", keyword=course_keyword, stats=stats, length=len(stats), img=img_data)
+    return render_template("visualization.html", keyword=course_keyword, stats=stats, length=len(stats), img=img_data, ratings=ratings)

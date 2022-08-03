@@ -117,39 +117,13 @@ def fetch_keywords():
         depts.append(result[0])
 
     return instructors, courses, depts
-
-# average ratings for each CRN 
-def get_avg_ratings():
-    conn = db.connect()
-    conn.execute("use squad;")
-    results = conn.execute ("""
-        SELECT c.CRN, c.DeptAbv, c.CourseNumber, c.CourseName, c.Description, AVG(r.Rating), r.InstructorNetID 
-        FROM Reviews r 
-        LEFT JOIN Courses c ON r.CRN = c.CRN 
-        LEFT JOIN Enrollments e ON c.CRN = e.CRN 
-        GROUP BY c.CRN, r.InstructorNetID
-        ORDER BY c.DeptAbv, c.CourseNumber; """).fetchall()
-    conn.close()
-    CRNs = []
-    for result in results:
-        CRN = {
-            "CRN": result[0],
-            "Course": result[1]+result[2],
-            "CourseName": result[3],
-            "Description": result[4],
-            "avgRating": round(result[5],2),
-            "InstructorNetID": result[6]
-        }
-        CRNs.append(CRN)
-
-    return CRNs
     
 # returns the most highly rated professors name and their rating for all courses (identified by the coursenumber and deptabv)
-def get_highest_ratings():
+def get_highest_ratings(course):
     conn = db.connect()
     conn.execute("use squad;")
     results = conn.execute("""
-        SELECT DISTINCT i.Name, s2.DeptAbv, s2.CourseNumber, s2.maxRating
+        SELECT DISTINCT i.Name, s2.DeptAbv, s2.CourseNumber, ROUND(s2.maxRating, 2)
         FROM (
                 SELECT MAX(s1.avgRating) as maxRating, s1.DeptAbv, s1.CourseNumber
                 FROM (
@@ -160,28 +134,29 @@ def get_highest_ratings():
                     ) AS s1 
                 GROUP BY s1.DeptAbv, s1.CourseNumber) AS s2 
                 LEFT JOIN (
-                            SELECT AVG(r2.Rating) as avgRating, c2.DeptAbv, c2.CourseNumber, r2.InstructorNetID 
+                            SELECT AVG(r2.Rating) as avgRating, c2.DeptAbv, c2.CourseNumber, r2.InstructorNetID
                             FROM Reviews r2 LEFT JOIN Courses c2 ON r2.CRN = c2.CRN 
                             GROUP BY c2.DeptAbv, c2.CourseNumber, r2.InstructorNetID
                         ) AS s3 
                 ON s2.maxRating = s3.avgRating AND s2.DeptAbv = s3.DeptAbv AND s2.CourseNumber = s3.CourseNumber 
                 LEFT JOIN Instructors i 
                 ON s3.InstructorNetID = i.NetID
-                ORDER BY s2.DeptAbv, s2.CourseNumber;
+                ORDER BY s2.DeptAbv, s2.CourseNumber
                 """).fetchall()
+    conn.execute("COMMIT;")
     conn.close()
     ratings = []
 
     for result in results:
-        rating = {
-            "deptAbv": result[1],
-            "courseNum": result[2],
-            # "courseName":result[4],
-            "instructor": result[0],
-            "avgRating": result[3]
-        }
-        ratings.append(rating)
-
+        if(result[1]+result[2]==course):
+            rating = {
+                "deptAbv": result[1],
+                "courseNum": result[2],
+                # "courseName":result[4],
+                "instructor": result[0],
+                "avgRating": result[3]
+            }
+            ratings.append(rating)
     return ratings
 
 def insert_review(username, data: dict):
@@ -251,7 +226,10 @@ def remove_review_by_id(review_id: str) -> None:
 def get_reviews_avg(course):
     conn = db.connect()
     conn.execute("use squad;")
-    query = 'SELECT i.NetID, i.Name, AVG(r.Rating), COUNT(r.Rating), MIN(r.Rating), MAX(r.Rating) from Reviews r inner join Courses c on c.CRN = r.CRN inner join Instructors i on i.NetID = r.InstructorNetID where c.Course like "{}" group by i.NetID ORDER BY i.Name'.format(course) 
+    conn.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED;')
+    conn.execute('START TRANSACTION;')
+    print("here")
+    query = 'SELECT i.NetID, i.Name, ROUND(AVG(r.Rating),2), COUNT(r.Rating), MIN(r.Rating), MAX(r.Rating) from Reviews r inner join Courses c on c.CRN = r.CRN inner join Instructors i on i.NetID = r.InstructorNetID where c.Course like "{}" group by i.NetID ORDER BY i.Name'.format(course) 
     results = conn.execute(query).fetchall()
     conn.close()
 

@@ -251,7 +251,7 @@ def remove_review_by_id(review_id: str) -> None:
 def get_reviews_avg(course):
     conn = db.connect()
     conn.execute("use squad;")
-    query = 'SELECT i.NetID, i.Name, AVG(r.Rating), COUNT(r.Rating), MIN(r.Rating), MAX(r.Rating) from Reviews r inner join Courses c on c.CRN = r.CRN inner join Instructors i on i.NetID = r.InstructorNetID where c.Course like "{}" group by i.NetID'.format(course) 
+    query = 'SELECT i.NetID, i.Name, AVG(r.Rating), COUNT(r.Rating), MIN(r.Rating), MAX(r.Rating) from Reviews r inner join Courses c on c.CRN = r.CRN inner join Instructors i on i.NetID = r.InstructorNetID where c.Course like "{}" group by i.NetID ORDER BY i.Name'.format(course) 
     results = conn.execute(query).fetchall()
     conn.close()
 
@@ -265,5 +265,4 @@ def get_reviews_avg(course):
             "Maximum": result[5]
         }
         stats.append(stat)
-
     return stats

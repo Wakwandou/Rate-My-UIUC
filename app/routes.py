@@ -1,6 +1,6 @@
-from flask import render_template, request, jsonify, redirect, url_for, session
+from flask import render_template, request, jsonify, redirect, url_for, session, Response
 from app import app, database as db_helper
-import re, base64, io
+import re, base64, io, json
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
@@ -81,6 +81,19 @@ def home():
         # return render_template('home.html', username=session['username'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
+
+@app.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    instructors, courses, depts = db_helper.fetch_keywords()
+    complete_list = instructors
+    complete_list.extend(depts)
+    complete_list.extend(courses)
+    return Response(json.dumps(complete_list), mimetype='application/json')
+
+@app.route('/autocomplete_courses', methods=['GET'])
+def autocomplete_courses():
+    instructors, courses, depts = db_helper.fetch_keywords()
+    return Response(json.dumps(courses), mimetype='application/json')
 
 @app.route('/profile')
 def profile():

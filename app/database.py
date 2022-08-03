@@ -76,41 +76,47 @@ def fetch_courses() -> dict:
     """Reads and returns a dictionary of courses"""
     conn = db.connect()
     conn.execute("use squad;")
-    query_results = conn.execute("Select * from Courses;").fetchall()
+    query_results = conn.execute("Select DISTINCT * from Courses;").fetchall()
     conn.close()
-    courses = {}
+    course_names = []
     course_to_crn = {} 
     
     for result in query_results:
-        course = {
-            "CourseName": result[1],
-            "CourseNumber": result[2],
-            "Description": result[3],
-            "DeptAbv": result[4],
-            "Course": result[5]
-        }
-        courses[result[0]] = course
+        course_names.append(result[5])
         course_to_crn[result[5]] = result[0]
 
-    return courses, course_to_crn
+    return course_names, course_to_crn
 
 def fetch_instructors() -> dict:
     """ Reads and returns a dictionary of instructors """
     conn = db.connect()
     conn.execute("use squad;")
-    query_results = conn.execute("Select * from Instructors;").fetchall()
+    query_results = conn.execute("Select DISTINCT * from Instructors;").fetchall()
     conn.close()
-    instructors = {}
+    instructors_names = []
     name_to_netid = {}
     for result in query_results:
-        instructor = {
-            "Name": result[1],
-            "DeptAbv": result[2]
-        }
-        instructors[result[0]] = instructor
+        instructors_names.append(result[1])
         name_to_netid[result[1]] = result[0]
+    return instructors_names, name_to_netid
 
-    return instructors, name_to_netid
+def fetch_keywords():
+    conn = db.connect()
+    conn.execute("use squad;")
+    query1 = conn.execute("Select DISTINCT Name from Instructors;").fetchall()
+    query2 = conn.execute("Select DISTINCT Course from Courses;").fetchall()
+    query3 = conn.execute("Select DISTINCT DeptAbv from Departments;").fetchall()
+    instructors = []
+    courses = []
+    depts = []
+    for result in query1:
+        instructors.append(result[0])
+    for result in query2:
+        courses.append(result[0])
+    for result in query3:
+        depts.append(result[0])
+
+    return instructors, courses, depts
 
 # average ratings for each CRN 
 def get_avg_ratings():

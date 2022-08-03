@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Home</title>
+        <title>Visualization</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.2/css/all.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -10,10 +10,10 @@
 	<body class="loggedin">
 		<nav class="navtop">
 			<div>
-				<h1>Rate My UIUC</h1>
+				<h1>Ratings Visualizer</h1>
                 <a href="{{ url_for('home') }}"><i class="fas fa-home"></i>Home</a>
 				<a href="{{ url_for('visualize') }}"><i class="fa-solid fa-chart-column"></i>Visualizer</a>
-				<a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i>Profile</a>
+                <a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i>Profile</a>
 				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#review" onclick="this.blur();"><i class="fa fa-pen fa-1"></i>Add Review</button>
 				<a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
 			</div>
@@ -62,11 +62,9 @@
 			</div>
 		</div>
 		</form>
-		
-		<!-- Searchbox  -->
-        <h2 style="text-align: center;">Search Anything</h2>
-
 	
+        <h2 style="text-align: center;">Enter a course</h2>
+
 		<div style ="text-align: center">
 			<form id="form"> 
 				<input type="search" id="query" name="q" placeholder="Search..." method="GET">
@@ -88,35 +86,31 @@
 				<thead>
 				<tr>
 					<!-- Change table header -->
-					<th class="Username">Username</th>
-					<th class="Rating">Rating</th>
-					<th class="Comment">Comment</th>
-					<th class="Recommended">Recommended</th>
-					<th class="Textbook">Textbook</th>
-					<th class="Course">Course</th>
-					<th class="CourseName">Course Name</th>
-					<th class="Instructor">Instructor</th>
+                    <th class="Instructor">Instructor</th>
+					<th class="Average">Average Ratings</th>
+                    <th class="Number">Number of Ratings</th>
+                    <th class="Minimum">Minimum Rating</th>
+                    <th class="Maximum">Maximum Rating</th>
 				</tr>
 				</thead>
 		
 				<tbody>
-				{% for review in reviews %}
+				{% for stat in stats %}
 					<tr>
 						<!-- Actual content -->
-						<td>{{review.Username}}</td>
-						<td>{{review.Rating}}</td>
-						<td><div style="overflow:auto;">{{review.Comment}}</div></td>
-						<td>{{review.IsRecommended}}</td>
-						<td>{{review.RequiresTextbook}}</td>
-						<td>{{review.Course}}</td>
-						<td>{{review.CourseName}}</td>
-						<td>{{review.InstructorName}}</td>
+						<td>{{stat.Instructor}}</td>
+                        <td>{{stat.Average}}</td>
+                        <td>{{stat.Number}}</td>
+                        <td>{{stat.Minimum}}</td>
+                        <td>{{stat.Maximum}}</td>
 					</tr>
 				{% endfor %}
 				
 				</tbody>
 			</table>
         </div>
+
+        <img src="{{img}}" class="center">
 	</body>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -126,3 +120,5 @@
     <script src="{{ url_for('static', filename='script/modal.js') }}"></script>
 
 </html>
+
+</body>

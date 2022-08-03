@@ -174,19 +174,19 @@ body.loggedin {
   padding: 5px;
   margin: 0 0 10px 0;
 }
-
 .table th, .table td, .table tr {
     text-align: center;
     vertical-align: middle;
 }
-
 /* bootstrap modifications */
 .container {
     width: auto;
     /* max-width: 680px; */
     padding: 0 15px;
 }
-
-/* .edit, .remove {
-    width: 10%;
-} */
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }

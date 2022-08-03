@@ -2,9 +2,9 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>{% block title %}{% endblock %}</title>
+        <title>Profile</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.2/css/all.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	</head>
 	<body class="loggedin">
@@ -12,9 +12,10 @@
 			<div>
 				<h1>{{profile["username"]}}'s Profile</h1>
                 <a href="{{ url_for('home') }}"><i class="fas fa-home"></i>Home</a>
+                <a href="{{ url_for('visualize') }}"><i class="fa-solid fa-chart-column"></i>Visualizer</a>
 				<a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i>Profile</a>
-				<a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
 				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#review" onclick="this.blur();"><i class="fa fa-pen fa-1"></i>Add Review</button>
+				<a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
 			</div>
 		</nav>
         
@@ -62,7 +63,7 @@
             </div>
             </form>
 
-            <form id="form">
+            <form id="edit-form">
                 <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -98,7 +99,7 @@
             
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="submit-edit">Submit Review</button>
+                            <button type="submit" class="btn btn-primary" id="submit-edit">Submit Edits</button>
                             <!-- <button id="submit-task" type="button" class="btn btn-primary">Submit Review</button> -->
                         </div>
                         </div>
@@ -128,7 +129,7 @@
                 <tr>
                     <!-- Actual content -->
                     <td>{{review.Rating}}</td>
-                    <td>{{review.Comment}}</td>
+                    <td><div style="overflow:auto;">{{review.Comment}}</div></td>
                     <td>{{review.IsRecommended}}</td>
                     <td>{{review.RequiresTextbook}}</td>
                     <td>{{review.Course}}</td>
